@@ -1,0 +1,21 @@
+   $app->post("/contact", function(Request $request, Response $response, array $args)
+    {
+        $body = $request->getParsedBody();
+        if(preg_match('/^[a-z0-9.]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i', $body["text"]))
+        {
+            var_dump($body);
+            echo "Não é possível enviar informações de contato neste campo";
+            return true;
+        }
+        if(preg_match('/^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$/', $body["text"]))
+        {
+            var_dump($body);
+            echo "Não é possível enviar informações de contato neste campo";
+            return true;
+        }
+        else {
+            var_dump($body);
+            echo "Orçamento concluído";
+            return false;
+        }
+    });

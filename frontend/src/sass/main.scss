@@ -1,0 +1,96 @@
+$theme-colors: (
+    "primary": #f0ec12,
+    "secondary":#000000,
+    "light": #dddddd,
+    "mute": #cccccc,
+    "grey": #aaaaaa,
+    "whatsapp": #25d366,
+    "telegram": #0088cc,
+    "facebook": #3b5998,
+    "youtube": #ff0000,
+    "github": #333,
+    "twitter": #1da1f2,
+);
+
+$border-radius: .1rem;
+
+// lazy...
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+.text-inherit {
+    color: inherit !important;
+}
+// reuse SASS Bootstrap variables:
+// $bp-xs: map-get($breakpoints, xs );
+// $bp-sm: map-get($breakpoints, sm );
+.line-h-1 {
+    line-height: 0.9 !important;
+}
+.line-h-2 {
+    line-height: 0.8 !important;
+}
+.line-h-3 {
+    line-height: 0.7 !important;
+}
+.line-h-4 {
+    line-height: 0.6 !important;
+}
+.line-h-5 {
+    line-height: 0.5 !important;
+}
+
+.font-sm-1 {
+    font-size: 0.9em !important;
+}
+.font-sm-2 {
+    font-size: 0.8em !important;
+}
+.font-sm-3 {
+    font-size: 0.7em !important;
+}
+.font-sm-4 {
+    font-size: 0.6em !important;
+}
+.font-sm-5 {
+    font-size: 0.5em !important;
+}
+.font-md-1 {
+    font-size: 1.1em !important;
+}
+.font-md-2 {
+    font-size: 1.2em !important;
+}
+.font-md-3 {
+    font-size: 1.3em !important;
+}
+.font-md-4 {
+    font-size: 1.4em !important;
+}
+.font-md-5 {
+    font-size: 1.5em !important;
+}
+.font-lg-1 {
+    font-size: 1.6em !important;
+}
+.font-lg-2 {
+    font-size: 1.7em !important;
+}
+.font-lg-3 {
+    font-size: 1.8em !important;
+}
+.font-lg-4 {
+    font-size: 1.9em !important;
+}
+.font-lg-5 {
+    font-size: 2.0em !important;
+}
+
+.mw-xs {
+    max-width: 550px !important;
+}
+.w-sm {
+    width: 760px !important;
+}
+.mw-sm {
+    max-width: 760px !important;
+}
