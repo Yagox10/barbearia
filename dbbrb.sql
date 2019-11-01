@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.9.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Tempo de geração: 13-Out-2019 às 17:47
--- Versão do servidor: 10.3.16-MariaDB
--- versão do PHP: 7.3.7
+-- Host: localhost
+-- Erstellungszeit: 30. Okt 2019 um 10:52
+-- Server-Version: 10.3.17-MariaDB-0+deb10u1
+-- PHP-Version: 7.3.9-1~deb10u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,46 +19,33 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `dearjohn`
+-- Datenbank: `dearjohn`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `brb_orders`
---
-
-CREATE TABLE `brb_orders` (
-  `order_id` int(11) NOT NULL,
-  `order_costumerId` int(11) NOT NULL,
-  `order_employeeId` int(11) NOT NULL,
-  `order_dateTime` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `order_price` varchar(10) NOT NULL,
-  `order_items` varchar(100) DEFAULT NULL,
-  `order_paymentId` int(11) NOT NULL,
-  `order_serviceIds` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estrutura da tabela `brb_payments`
+-- Tabellenstruktur für Tabelle `brb_payments`
 --
 
 CREATE TABLE `brb_payments` (
+  `payment_id` int(11) NOT NULL,
+  `payment_customerId` int(11) NOT NULL,
+  `payment_employeeId` int(11) NOT NULL,
   `payment_mode` varchar(20) NOT NULL,
   `payment_description` varchar(300) NOT NULL,
   `payment_value` varchar(10) NOT NULL,
-  `payment_id` int(11) NOT NULL
+  `payment_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `brb_people`
+-- Tabellenstruktur für Tabelle `brb_people`
 --
 
 CREATE TABLE `brb_people` (
+  `person_id` int(11) NOT NULL,
   `person_fullName` varchar(100) NOT NULL,
   `person_birthday` date NOT NULL,
   `person_phone` varchar(15) NOT NULL,
@@ -71,72 +58,83 @@ CREATE TABLE `brb_people` (
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `brb_products`
+-- Tabellenstruktur für Tabelle `brb_products`
 --
 
 CREATE TABLE `brb_products` (
   `product_id` int(11) NOT NULL,
   `product_name` varchar(100) NOT NULL,
   `product_description` varchar(500) NOT NULL,
-  `product_excerpt` varchar(200) DEFAULT NULL,
-  `product_price` varchar(10) NOT NULL,
-  `product_priceOff` varchar(10) DEFAULT NULL
+  `product_stock` int(11) NOT NULL DEFAULT 0,
+  `product_price` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `brb_services`
+-- Tabellenstruktur für Tabelle `brb_services`
 --
 
 CREATE TABLE `brb_services` (
   `service_id` int(11) NOT NULL,
   `service_name` varchar(100) NOT NULL,
-  `service_parentId` int(11) NOT NULL,
   `service_active` tinyint(1) NOT NULL,
-  `service_meanTime` varchar(8) NOT NULL
+  `service_meanTime` varchar(8) DEFAULT NULL,
+  `service_price` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Índices para tabelas despejadas
+-- Indizes der exportierten Tabellen
 --
 
 --
--- Índices para tabela `brb_orders`
+-- Indizes für die Tabelle `brb_payments`
 --
-ALTER TABLE `brb_orders`
-  ADD PRIMARY KEY (`order_id`);
+ALTER TABLE `brb_payments`
+  ADD PRIMARY KEY (`payment_id`);
 
 --
--- Índices para tabela `brb_products`
+-- Indizes für die Tabelle `brb_people`
+--
+ALTER TABLE `brb_people`
+  ADD PRIMARY KEY (`person_id`);
+
+--
+-- Indizes für die Tabelle `brb_products`
 --
 ALTER TABLE `brb_products`
   ADD PRIMARY KEY (`product_id`);
 
 --
--- Índices para tabela `brb_services`
+-- Indizes für die Tabelle `brb_services`
 --
 ALTER TABLE `brb_services`
   ADD PRIMARY KEY (`service_id`);
 
 --
--- AUTO_INCREMENT de tabelas despejadas
+-- AUTO_INCREMENT für exportierte Tabellen
 --
 
 --
--- AUTO_INCREMENT de tabela `brb_orders`
+-- AUTO_INCREMENT für Tabelle `brb_payments`
 --
-ALTER TABLE `brb_orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `brb_payments`
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `brb_products`
+-- AUTO_INCREMENT für Tabelle `brb_people`
+--
+ALTER TABLE `brb_people`
+  MODIFY `person_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `brb_products`
 --
 ALTER TABLE `brb_products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `brb_services`
+-- AUTO_INCREMENT für Tabelle `brb_services`
 --
 ALTER TABLE `brb_services`
   MODIFY `service_id` int(11) NOT NULL AUTO_INCREMENT;

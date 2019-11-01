@@ -388,6 +388,8 @@ export class NewProduct extends Component {
 /**
  * url: string url
  * fields: array of { component: JSX* }; *: must render data as children (JSX just a frame)
+ * append: JSX append to each row
+ * preppend: list header array of strings
  */
 export class SeeWithoutPrefix extends Component {
     state = {
@@ -510,7 +512,63 @@ const data = [
     },
 ]
 
-export default class extends Component {
+export class MoreGeneral extends Component {
+    state = {
+        fullName: "",
+        birthday: "",
+        phone: "",
+        email: "",
+        address: "",
+        scope: this.props.scope,
+        doc: ""
+    }
+    updateState ( pair ) {
+        this.setState( pair );
+    }
+    submitHandler () {
+        fetch( peopleUrl, getInit( this.state ) )
+        .then( r => r.json() )
+        .then( j => {
+            if ( j ) {
+                responseWindow( "Cadastro realizado com sucesso." );
+            } else {
+                responseWindow( "Preencha os campos obrigatórios." );
+            }
+        } )
+    }
+    render () {
+        return (
+            <div className="container p-0">
+                <div className="form-group row">
+                    {
+                        data.map( ( x, i ) => {
+                            return (
+                                <div
+                                    className={ "col-12 col-sm-" + x.col }
+                                    key={ i }
+                                >
+                                    <label className="d-block my-2">
+                                        <small>
+                                            { x.text } 
+                                        </small>
+                                        <input
+                                            type={ x.type }
+                                            value={ this.state[ x.name ] }
+                                            onChange={ ev => this.updateState( { [ x.name ]: ev.target.value } ) }
+                                            className="form-control"
+                                        />
+                                    </label>
+                                </div>
+                            );
+                        } )
+                    }
+                </div>
+            </div>
+        );
+    }
+}
+
+export default class NewCustomer extends Component {
     state = {
         fullName: "",
         birthday: "",
