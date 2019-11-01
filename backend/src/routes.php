@@ -143,3 +143,17 @@ $app->group( '/api', function () use ( $app ) {
     } );
     
 } )->add( $mw[ "api" ] )->add( $mw[ "hashIt" ] );
+
+$this->map( [ "GET" ], "/payments[/{id}]", function( Request $request, Response $response, array $args ){
+    if( empty($args["id"]) ){
+        $connection = $this->database;
+        $sql = "SELECT * FROM brb_payments WHERE payment_id = {$args["id"]}";
+        $preparedSql = $connection->prepare($sql);
+        $preparedSql->execute();
+        $fetch = $preparedSql->fetch();
+        $sql = "SELECT * FROM brb_people WHERE payment_customerId = {$fetch["payment_customerId"]} OR payment_employeeId = {$fetch["employeeId"]}";
+        $preparedSql = $connection->prepare($sql);
+        $preparedSql->execute();
+        $custAndemplo = $preparedSql->fetch(); 
+    }
+});
