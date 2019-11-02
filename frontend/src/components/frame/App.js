@@ -25,10 +25,10 @@ import NewUser, {
 } from '../form/App';
 
 
-const SeeUsers = () => (
+const SeeUsers = ( props ) => (
     <div>
         <SeeWithoutPrefix
-            url={ peopleUrl }
+            url={ peopleUrl + "?person_scope=" + props.scope }
             fields={ [ "fullName", "email", "phone" ] }
             preppend={ [ "Nome", "email", "Telefone" ] }
             append={ x => (
@@ -94,8 +94,23 @@ export default class App extends Component {
             <div className="w-100 p-2">
                 <main className="d-block mb-5 pb-4 mb-sm-0 pb-sm-0">
                     <Switch>
-                        <Route path="/nova-conta" component={ NewUser } />
-                        <Route path="/listar-contas" component={ SeeUsers } />
+                        <Route
+                            path="/novo-funcionario"
+                            render={ () => <NewUser scope="employee" /> }
+                        />
+                        <Route
+                            path="/listar-funcionarios"
+                            render={ () => <SeeUsers scope="employee" /> }
+                        />
+
+                        <Route
+                            path="/novo-cliente"
+                            render={ () => <NewUser scope="customer" /> }
+                        />
+                        <Route
+                            path="/listar-clientes"
+                            render={ () => <SeeUsers scope="customer" /> }
+                        />
 
                         <Route path="/novo-produto" component={ NewProduct } />
                         <Route path="/listar-produtos" component={ SeeProducts } />

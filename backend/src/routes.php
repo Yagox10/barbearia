@@ -8,6 +8,33 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use SebastianBergmann\GlobalState\Exception;
 
+$app->get( "/payments[/{id}]", function( Request $request, Response $response, array $args ){
+    $connection = $this->database;
+    $sql = "SELECT * FROM brb_payments";
+    if( ! empty( $args[ "id" ] ) ) {
+        $sql .= " WHERE payment_id = {$args["id"]}";
+    }
+    $preparedSql = $connection->prepare( $sql );
+    $preparedSql->execute();
+    if ( ! empty( $args[ "id" ] ) ) {
+        $fetch = $preparedSql->fetchAll();
+    } else {
+        $fetch[] = $preparedSql->fetch();
+    }
+
+    foreach ( $fetch as $p ) {
+        // var_dump( $p );
+        $sql = "SELECT * FROM brb_people WHERE person_id = {$p[ "payment_customerId" ]} OR person_id = {$p[ "payment_employeeId" ]}";
+        $preparedSql = $connection->prepare( $sql );
+        $preparedSql->execute();
+        $people = $preparedSql->fetchAll();
+        $p[ "customer" ] = ( $p[ "payment_customerId" ] === $people[ 0 ][ "person_id" ] ) ? $people[ 0 ] : $people[ 1 ];
+        $p[ "employee" ] = ( $p[ "payment_employeeId" ] === $people[ 0 ][ "person_id" ] ) ? $people[ 0 ] : $people[ 1 ];
+        $data[] = $p;
+    }
+    return $response->withJson( $data );
+});
+
 $app->group( '/api', function () use ( $app ) {
 
     $this->map( [ "POST", "GET" ], "/{param}", function( Request $request, Response $response, array $args ) {
@@ -143,17 +170,3 @@ $app->group( '/api', function () use ( $app ) {
     } );
     
 } )->add( $mw[ "api" ] )->add( $mw[ "hashIt" ] );
-
-$this->map( [ "GET" ], "/payments[/{id}]", function( Request $request, Response $response, array $args ){
-    if( empty($args["id"]) ){
-        $connection = $this->database;
-        $sql = "SELECT * FROM brb_payments WHERE payment_id = {$args["id"]}";
-        $preparedSql = $connection->prepare($sql);
-        $preparedSql->execute();
-        $fetch = $preparedSql->fetch();
-        $sql = "SELECT * FROM brb_people WHERE payment_customerId = {$fetch["payment_customerId"]} OR payment_employeeId = {$fetch["employeeId"]}";
-        $preparedSql = $connection->prepare($sql);
-        $preparedSql->execute();
-        $custAndemplo = $preparedSql->fetch(); 
-    }
-});

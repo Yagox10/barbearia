@@ -575,7 +575,7 @@ export default class NewCustomer extends Component {
         phone: "",
         email: "",
         address: "",
-        scope: "",
+        scope: this.props.scope,
         doc: ""
     }
     updateState ( pair ) {
@@ -595,27 +595,10 @@ export default class NewCustomer extends Component {
     render () {
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-12">
-                        <h2 className="d-block my-3">
-                            Qual tipo de cadastro?
-                        </h2>
-                        <div className="d-block">
-                            <Select
-                                options={ [
-                                    { value: "employee", label: "Funcionário" },
-                                    { value: "customer", label: "Cliente" }
-                                ] }
-                                onChange={ v => this.updateState( { scope: v.value } ) }
-                            />
-                        </div>
-                    </div>
-                </div>
-                <hr className="my-5" />
                 <div className="form-group row">
                     <div className="col-12">
                         <h4 className="mb-3">
-                            Cadastrando <span className={ "font-weight-bold text-" + ( this.state.scope === "employee" ? "danger" : "success" ) }>{ scopeName( this.state.scope ) }</span>
+                            Cadastrando <span className={ "font-weight-bold text-" + ( this.props.scope === "employee" ? "danger" : "success" ) }>{ scopeName( this.props.scope ) }</span>
                         </h4>
                     </div>
                     {

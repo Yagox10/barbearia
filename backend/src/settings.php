@@ -1,6 +1,6 @@
 <?php
 $displayErrorDetails = true;
-$addContentLengthHeader = false;
+$addContentLengthHeader = true;
 $database = [
     "host" => "localhost",
     "name" => "deahjohn",

@@ -41,13 +41,23 @@ export const navigation = [
         "icon": "fas fa-home",
     },
     {
-        "text": "Nova Conta",
-        "url": "/nova-conta",
+        "text": "Novo Funcionário",
+        "url": "/novo-funcionario",
         "icon": "fas fa-user-plus",
     },
     {
-        text: "Listar Contas",
-        url: "/listar-contas",
+        text: "Listar Funcionário",
+        url: "/listar-funcionarios",
+        icon: "fas fa-users"
+    },
+    {
+        "text": "Novo Cliente",
+        "url": "/novo-cliente",
+        "icon": "fas fa-user-plus",
+    },
+    {
+        text: "Listar Clientes",
+        url: "/listar-clientes",
         icon: "fas fa-users"
     },
     {
