@@ -3,10 +3,10 @@ $displayErrorDetails = true;
 $addContentLengthHeader = true;
 $database = [
     "host" => "localhost",
-    "name" => "deahjohn",
+    "name" => "dearjohn",
     "charset" => "utf8",
-    "user" => "enriquerene",
-    "password" => "um2tres45",
+    "user" => "dearjohn",
+    "password" => "8888",
     "prefix" => "brb_",
 ];
 

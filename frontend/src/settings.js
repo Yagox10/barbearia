@@ -1,7 +1,7 @@
 /**
  * ORÇA AGORA BACKEND ROUTES
  */
-export const basename = "http://localhost:8000";
+export const basename = "http://localhost/dearjohn/backend";
 
 export const apiUrl = basename + "/api";
 export const peopleUrl = apiUrl + "/people";
