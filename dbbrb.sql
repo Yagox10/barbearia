@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 30. Okt 2019 um 10:52
+-- Erstellungszeit: 02. Nov 2019 um 10:40
 -- Server-Version: 10.3.17-MariaDB-0+deb10u1
--- PHP-Version: 7.3.9-1~deb10u1
+-- PHP-Version: 7.3.11-1~deb10u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Datenbank: `dearjohn`
+-- Datenbank: `dbbrb`
 --
 
 -- --------------------------------------------------------
@@ -38,6 +38,15 @@ CREATE TABLE `brb_payments` (
   `payment_date` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Daten für Tabelle `brb_payments`
+--
+
+INSERT INTO `brb_payments` (`payment_id`, `payment_customerId`, `payment_employeeId`, `payment_mode`, `payment_description`, `payment_value`, `payment_date`) VALUES
+(1, 3, 5, 'cash', 'Cabelo e barba', '20,00', '2019-10-26'),
+(2, 2, 5, 'debit', 'Cabelo e barba', '25,00', '2019-10-26'),
+(3, 2, 5, 'credit', 'Barba modelada e cabelo com pigmentação', '32,00', '2019-10-26');
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +64,17 @@ CREATE TABLE `brb_people` (
   `person_doc` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Daten für Tabelle `brb_people`
+--
+
+INSERT INTO `brb_people` (`person_id`, `person_fullName`, `person_birthday`, `person_phone`, `person_email`, `person_address`, `person_scope`, `person_doc`) VALUES
+(1, 'Nome', '2019-10-10', '219464805', 'djo@oodas.com', 'jdiasj idsjid a', 'customer', ''),
+(2, 'Nome', '2019-10-10', '219464805', 'djo@oodas.com', 'jdiasj idsjid a', 'customer', ''),
+(3, 'Nome do cliente', '2005-02-23', '21964470631', 'algum@email.com', 'algum endereço qualquer, 0 - Cetnro', 'customer', ''),
+(4, 'Mais um', '2019-10-04', '2198000089', 'mais@um.com', 'endereço aqui agora', 'customer', ''),
+(5, 'gf', '1990-02-10', '21999', 'z@b', 'endere dede ', 'employee', '');
+
 -- --------------------------------------------------------
 
 --
@@ -63,11 +83,21 @@ CREATE TABLE `brb_people` (
 
 CREATE TABLE `brb_products` (
   `product_id` int(11) NOT NULL,
+  `product_scope` varchar(15) NOT NULL,
   `product_name` varchar(100) NOT NULL,
   `product_description` varchar(500) NOT NULL,
   `product_stock` int(11) NOT NULL DEFAULT 0,
   `product_price` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Daten für Tabelle `brb_products`
+--
+
+INSERT INTO `brb_products` (`product_id`, `product_scope`, `product_name`, `product_description`, `product_stock`, `product_price`) VALUES
+(1, '', 'nome do prod', 'descr do prod', 0, '4,20'),
+(2, '', 'Novo Produto', 'Esse produto é vendido aqui', 0, '13,00'),
+(3, '', 'Cerveja Artesanal', 'Cerveja do Dear John', 0, '7,60');
 
 -- --------------------------------------------------------
 
@@ -119,19 +149,19 @@ ALTER TABLE `brb_services`
 -- AUTO_INCREMENT für Tabelle `brb_payments`
 --
 ALTER TABLE `brb_payments`
-  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `brb_people`
 --
 ALTER TABLE `brb_people`
-  MODIFY `person_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `person_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `brb_products`
 --
 ALTER TABLE `brb_products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `brb_services`

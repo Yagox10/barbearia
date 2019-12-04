@@ -28,8 +28,14 @@ $app->get( "/payments[/{id}]", function( Request $request, Response $response, a
         $preparedSql = $connection->prepare( $sql );
         $preparedSql->execute();
         $people = $preparedSql->fetchAll();
+        var_dump( $p );
+        $sql = "SELECT * FROM brb_products WHERE product_id = {$p[ "payment_service" ]}";
+        $preparedSql = $connection->prepare( $sql );
+        $preparedSql->execute();
+        $service = $preparedSql->fetch();
         $p[ "customer" ] = ( $p[ "payment_customerId" ] === $people[ 0 ][ "person_id" ] ) ? $people[ 0 ] : $people[ 1 ];
         $p[ "employee" ] = ( $p[ "payment_employeeId" ] === $people[ 0 ][ "person_id" ] ) ? $people[ 0 ] : $people[ 1 ];
+        $p[ "service" ] = $service;
         $data[] = $p;
     }
     return $response->withJson( $data );
