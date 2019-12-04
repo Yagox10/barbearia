@@ -8,6 +8,7 @@ export const peopleUrl = apiUrl + "/people";
 export const productsUrl = apiUrl + "/products";
 export const ordersUrl = apiUrl + "/orders";
 export const paymentsUrl = apiUrl + "/payments";
+export const readPaymentsUrl = "/payments";
 
 export const scopeName = scope => {
     switch ( scope ) {
@@ -29,6 +30,10 @@ export const scopeName = scope => {
             return "Sócio";
         case "customer":
             return "Cliente";
+        case "service":
+            return "Serviço";
+        case "product":
+            return "Produto";
         default:
             return "";
     }
@@ -71,6 +76,16 @@ export const navigation = [
         icon: "fas fa-list-ul"
     },
     {
+        text: "Novo Serviço",
+        url: "/novo-servico",
+        icon: "fas fa-plus"
+    },
+    {
+        text: "Listar Serviços",
+        url: "/listar-servicos",
+        icon: "fas fa-list-ul"
+    },
+    {
         text: "Novo Pedido",
         url: "/novo-pedido",
         icon: "fas fa-file"
@@ -79,16 +94,6 @@ export const navigation = [
         text: "Listar Pedidos",
         url: "/listar-pedidos",
         icon: "fas fa-copy"
-    },
-    {
-        text: "Novo Pagamento",
-        url: "/novo-pagamento",
-        icon: "fas fa-money-bill"
-    },
-    {
-        text: "Listar Pagamentos",
-        url: "/listar-pagamentos",
-        icon: "fas fa-wallet"
     },
 ]
 

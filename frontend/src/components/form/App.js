@@ -8,7 +8,7 @@ import {
     productsUrl,
     getInit,
     paymentsUrl,
-    scopeName
+    scopeName,
 } from '../../settings';
 import {
     responseWindow,
@@ -40,24 +40,6 @@ const orderServices = [
     }
 ]
 
-const orderProducts = [
-    {
-        value: 1,
-        label: "Cerveja Artesanal Dear John",
-    },
-    {
-        value: 2,
-        label: "Cerveja Brhama 1L",
-    },
-    {
-        value: 3,
-        label: "Cerveja Brhama 365mL",
-    },
-    {
-        value: 4,
-        label: "Cerveja Antártica 1L",
-    }
-]
 
 export class NewOrder extends Component {
     state = {
@@ -98,12 +80,12 @@ export class NewOrder extends Component {
                                 Cliente
                             </small>
                             <Http
-                                url={ peopleUrl }
+                                url={ peopleUrl + "?person_scope=customer" }
                                 responseHandler={ j => j.map( x => unPrefixObject( x ) ).map( y => ( { value: y.id, label: y.fullName } ) ) }
                                 propName="options"
                             >
                                 <Select
-                                    onChange={ v => this.updateState( { customerId: v.value } ) }
+                                    onChange={ v => this.updateState( { customerId: v.label } ) }
                                 />
                             </Http>
                         </label>
@@ -116,12 +98,12 @@ export class NewOrder extends Component {
                                 Funcionário/a
                             </small>
                             <Http
-                                url={ peopleUrl }
+                                url={ peopleUrl + "?person_scope=employee" }
                                 responseHandler={ j => j.map( x => unPrefixObject( x ) ).map( y => ( { value: y.id, label: y.fullName } ) ) }
                                 propName="options"
                             >
                                 <Select
-                                    onChange={ v => this.updateState( { employeeId: v.value } ) }
+                                    onChange={ v => this.updateState( { employeeId: v.label } ) }
                                 />
                             </Http>
                         </label>
@@ -134,10 +116,15 @@ export class NewOrder extends Component {
                             <small>
                                 Serviço
                             </small>
-                            <Select
-                                options={ orderServices }
-                                onChange={ v => this.updateState( { service: v.value } ) }
-                            />
+                            <Http
+                                url={ productsUrl + "?product_scope=service" }
+                                responseHandler={ j => j.map( x => unPrefixObject( x ) ).map( y => ( { value: y.name, label: y.name } ) ) }
+                                propName="options"
+                            >
+                                <Select
+                                    onChange={ v => this.updateState( { service: v.value } ) }
+                                />
+                            </Http>
                         </label>
                     </div>
                     <div
@@ -147,10 +134,40 @@ export class NewOrder extends Component {
                             <small>
                                 Produtos
                             </small>
+                            <button className="btn btn-block btn-primary"
+                                onClick={ ev => alert( "em desenvolvimento" ) }
+                            >
+                                <i className="fas fa-plus"></i>
+                                <span className="mx-1">
+                                    Adicionar Produtos
+                                </span>
+                            </button>
+                        </label>
+                    </div>
+                    <div
+                        className="col-12 col-sm-6"
+                    >
+                        <label className="d-block my-2">
+                            <small>
+                                Modo de Pagamento
+                            </small>
                             <Select
-                                options={ orderProducts }
-                                onChange={ v => this.updateState( { produtcts: ( v ? v.map( x => x.value ) : [] ) } ) }
-                                isMulti
+                                options={ paymentsModes }
+                                onChange={ v => this.updateState( { mode: v.value } ) }
+                            />
+                        </label>
+                    </div>
+                    <div
+                        className="col-12 col-sm-6"
+                    >
+                        <label className="d-block my-2">
+                            <small>
+                                Valor Total:
+                            </small>
+                            <input
+                                value={ this.state.sum }
+                                disabled
+                                className="form-control"
                             />
                         </label>
                     </div>
@@ -191,15 +208,15 @@ export class NewOrder extends Component {
  */
 const paymentsModes = [
     {
-        value: "credit",
+        value: "Crédito",
         label: "Crédito",
     },
     {
-        value: "debit",
+        value: "Débito",
         label: "Débito",
     },
     {
-        value: "cash",
+        value: "Dinheiro",
         label: "Dinheiro",
     }
 ]
@@ -295,31 +312,12 @@ export class NewPayment extends Component {
 /**
  * 
  */
-const productsData = [
-    {
-        name: "name",
-        text: "Nome do Produto",
-        type: "text",
-        col: "6",
-    },
-    {
-        name: "price",
-        text: "Preço",
-        type: "text",
-        col: "6",
-    },
-    {
-        name: "description",
-        text: "Breve descrição",
-        type: "text",
-        col: "12",
-    }
-]
 export class NewProduct extends Component {
     state = {
         price: "",
         description: "",
         name: "",
+        scope: this.props.scope,
     }
     updateState ( pair ) {
         this.setState( pair );
@@ -336,12 +334,32 @@ export class NewProduct extends Component {
         } )
     }
     render () {
+        const productsData = [
+            {
+                name: "name",
+                text: "Nome do " + scopeName( this.props.scope ),
+                type: "text",
+                col: "6",
+            },
+            {
+                name: "price",
+                text: "Preço",
+                type: "text",
+                col: "6",
+            },
+            {
+                name: "description",
+                text: "Breve descrição",
+                type: "text",
+                col: "12",
+            }
+        ]
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-12">
                         <h2 className="d-block my-3">
-                            Cadastre seu produto
+                            Cadastre seu { scopeName( this.props.scope ) }
                         </h2>
                     </div>
                 </div>
@@ -374,7 +392,7 @@ export class NewProduct extends Component {
                             onClick={ ev => this.submitHandler() }
                         >
                             <span className="mx-1">
-                                Cadastrar Produto
+                                Cadastrar { scopeName( this.props.scope ) }
                             </span>
                             <i className="fas fa-check"></i>
                         </button>
@@ -420,7 +438,7 @@ export class SeeWithoutPrefix extends Component {
             )
         }
     }
-    appendHander ( x ) {
+    appendHandler ( x ) {
         if ( this.props.append ) {
             if ( x ) {
                 return (
@@ -448,16 +466,16 @@ export class SeeWithoutPrefix extends Component {
                                     {
                                         this.props.fields.map( ( y, k ) => {
                                             return ( 
-                                                <div
+                                                <td
                                                     key={ k }
                                                     className="m-auto py-2"
                                                 >
                                                     { x[ y ] }
-                                                </div>
+                                                </td>
                                             )
                                         } ) 
                                     }
-                                    { this.appendHander( x ) }
+                                    { this.appendHandler( x ) }
                                 </li>
                             );
                         } )

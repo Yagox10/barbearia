@@ -31,58 +31,48 @@ const SeeUsers = ( props ) => (
             url={ peopleUrl + "?person_scope=" + props.scope }
             fields={ [ "fullName", "email", "phone" ] }
             preppend={ [ "Nome", "email", "Telefone" ] }
-            append={ x => (
-                <a className="text-info small">
-                    <i className="fas fa-list"></i>
-                    <span className="mx-1">Detalhes</span>
-                </a>
-            ) }
+            // append={ x => (
+            //     <a className="text-info small"
+            //         onClick={ ev => alert( "..." )}
+            //     >
+            //         <i className="fas fa-list"></i>
+            //         <span className="mx-1">Detalhes</span>
+            //     </a>
+            // ) }
         ></SeeWithoutPrefix>
     </div>
 );
-const SeeProducts = () => (
+const SeeProducts = ( props ) => (
     <div>
         <SeeWithoutPrefix
-            url={ productsUrl }
-            fields={ [ "name", "price", "description" ] }
-            preppend={ [ "Nome", "Preço", "Descrição" ] }
-            append={ x => (
-                <a className="text-info small">
-                    <i className="fas fa-list"></i>
-                    <span className="mx-1">Detalhes</span>
-                </a>
-            ) }
+            url={ productsUrl + "?product_scope=" + props.scope }
+            fields={ props.fields }
+            preppend={ props.preppend }
+            // append={ x => (
+            //     <a className="text-info small"
+            //         onClick={ ev => alert( "..." )}
+            //     >
+            //         <i className="fas fa-list"></i>
+            //         <span className="mx-1">Detalhes</span>
+            //     </a>
+            // ) }
         ></SeeWithoutPrefix>
     </div>
 );
 const SeeOrders = () => (
     <div>
-        Em desenvolvimento
-        {/* <SeeWithoutPrefix
-            url={ ordersUrl }
-            fields={ [ "date", "price", "description" ] }
-            preppend={ [ "Data", "Preço", "Descrição" ] }
-            append={ x => (
-                <a className="text-info small">
-                    <i className="fas fa-list"></i>
-                    <span className="mx-1">Detalhes</span>
-                </a>
-            ) }
-        ></SeeWithoutPrefix> */}
-    </div>
-);
-const SeePayments = () => (
-    <div>
         <SeeWithoutPrefix
             url={ paymentsUrl }
-            fields={ [ "date", "mode", "description" ] }
-            preppend={ [ "Data", "Modo de Pagamento", "Descrição" ] }
-            append={ x => (
-                <a className="text-info small">
-                    <i className="fas fa-list"></i>
-                    <span className="mx-1">Detalhes</span>
-                </a>
-            ) }
+            fields={ [ "date", "mode", "customerId", "employeeId" ] }
+            preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a" ] }
+            // append={ x => (
+            //     <a className="text-info small"
+            //         onClick={ ev => alert( "..." )}
+            //     >
+            //         <i className="fas fa-list"></i>
+            //         <span className="mx-1">Detalhes</span>
+            //     </a>
+            // ) }
         ></SeeWithoutPrefix>
     </div>
 );
@@ -111,16 +101,35 @@ export default class App extends Component {
                             path="/listar-clientes"
                             render={ () => <SeeUsers scope="customer" /> }
                         />
-
-                        <Route path="/novo-produto" component={ NewProduct } />
-                        <Route path="/listar-produtos" component={ SeeProducts } />
-
+                        {/*  */}
+                        <Route
+                            path="/novo-produto"
+                            render={ () => <NewProduct scope="product"/> }
+                        />
+                        <Route
+                            path="/listar-produtos"
+                            render={ () => <SeeProducts
+                                scope="product"
+                                fields={ [ "name", "price", "stock" ] }
+                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span>Estoque</span> ] }
+                            /> }
+                        />
+                        <Route
+                            path="/novo-servico"
+                            render={ () => <NewProduct scope="service" /> }
+                        />
+                        <Route
+                            path="/listar-servicos"
+                            render={ () => <SeeProducts
+                                scope="service"
+                                fields={ [ "name", "price" ] }
+                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span></span> ] }
+                            /> }
+                        />
+                        {/*  */}
                         <Route path="/novo-pedido" component={ NewOrder } />
                         <Route path="/listar-pedidos" component={ SeeOrders } />
 
-                        <Route path="/novo-pagamento" component={ NewPayment } />
-                        <Route path="/listar-pagamentos" component={ SeePayments } />
-                        
                         <Route path="/" component={ Home } />
                         <Route component={ Unvailable } />
                     </Switch>
