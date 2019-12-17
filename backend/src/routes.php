@@ -40,7 +40,14 @@ $app->get( "/payments[/{id}]", function( Request $request, Response $response, a
     }
     return $response->withJson( $data );
 });
-
+$app->get('/find/{scope}/{name}', function( Request $request, Response $response, array $args ){
+    $connection = $this->database;
+    $sql = "SELECT * FROM brb_people WHERE person_scope = '{$args["scope"]}' AND person_fullName LIKE '%{$args["name"]}%' ORDER BY person_fullName ASC";
+    $preparedSql = $pdo->prepare($sql);
+    $preparedSql->execute();
+    $res = $preparedSql->fetchAll();
+    return $response->withJson($res);
+});
 $app->group( '/api', function () use ( $app ) {
 
     $this->map( [ "POST", "GET" ], "/{param}", function( Request $request, Response $response, array $args ) {
