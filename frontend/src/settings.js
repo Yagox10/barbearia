@@ -1,7 +1,8 @@
 /**
  * ORÇA AGORA BACKEND ROUTES
  */
-export const basename = "http://localhost/dearjohn/backend";
+export const indev = true;
+export const basename = ( indev ? "http://localhost:8000" : "http://localhost/dearjohn/backend" );
 
 export const apiUrl = basename + "/api";
 export const peopleUrl = apiUrl + "/people";
@@ -9,6 +10,8 @@ export const productsUrl = apiUrl + "/products";
 export const ordersUrl = apiUrl + "/orders";
 export const paymentsUrl = apiUrl + "/payments";
 export const readPaymentsUrl = "/payments";
+
+export const findUrl = basename + "/find";
 
 export const scopeName = scope => {
     switch ( scope ) {

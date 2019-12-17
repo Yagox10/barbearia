@@ -8,6 +8,16 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use SebastianBergmann\GlobalState\Exception;
 
+/**
+ * 
+ * A FAZER
+ * 
+ */
+$app->get( "/products[/{id}]", function( Request $request, Response $response, array $args ) {} );
+
+ /**
+  * 
+  */
 $app->get( "/payments[/{id}]", function( Request $request, Response $response, array $args ){
     $connection = $this->database;
     $sql = "SELECT * FROM brb_payments";

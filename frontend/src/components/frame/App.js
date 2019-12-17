@@ -12,7 +12,8 @@ import {
     ordersUrl,
     productsUrl,
     paymentsUrl,
-    peopleUrl
+    peopleUrl,
+    findUrl
 } from '../../settings';
 
 import Unvailable from '../unvailable/App';
@@ -31,6 +32,8 @@ const SeeUsers = ( props ) => (
             url={ peopleUrl + "?person_scope=" + props.scope }
             fields={ [ "fullName", "email", "phone" ] }
             preppend={ [ "Nome", "email", "Telefone" ] }
+            withFinder={ findUrl }
+            scope={ props.scope }
             // append={ x => (
             //     <a className="text-info small"
             //         onClick={ ev => alert( "..." )}
@@ -123,7 +126,7 @@ export default class App extends Component {
                             render={ () => <SeeProducts
                                 scope="service"
                                 fields={ [ "name", "price" ] }
-                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span></span> ] }
+                                preppend={ [ <span>Nome</span>, <span>Preço</span> ] }
                             /> }
                         />
                         {/*  */}

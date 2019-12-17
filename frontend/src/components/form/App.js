@@ -17,6 +17,56 @@ import {
 
 import Http from '../http';
 
+export class Products extends Component {
+    state = {
+      counter: 0,
+      listOne: null,
+      listTwo: null
+    };
+  
+    incrementIfTest = event => {
+      console.log(event.target.name);
+  
+      if (
+        //check if is already selected, do not want to double count
+        event.target.value === "Test" &&
+        this.state[event.target.name] !== "Test"
+      ) {
+        //increment count
+        this.setState({
+          ...this.state,
+          counter: this.state.counter + 1,
+          [event.target.name]: event.target.value
+        });
+        //decrease count if they remove Test selection, cannot be below 0.
+      } else if(this.state[event.target.name] === "Test"){
+        this.setState({
+          ...this.state,
+          counter: this.state.counter > 0 ? this.state.counter - 1 : 0,
+          [event.target.name]: event.target.value
+        });
+      }
+    };
+  
+    render() {
+      return (
+        <div>
+          <h4>{this.state.counter}</h4>
+          <select name="listOne" onChange={this.incrementIfTest}>
+            <option />
+            <option>DownloadPrepare</option>
+            <option>Test</option>
+          </select>
+          <select name="listTwo" onChange={this.incrementIfTest}>
+            <option />
+            <option>DownloadPrepare</option>
+            <option>Test</option>
+          </select>
+        </div>
+      );
+    }
+  }
+
 /**
  * 
  */
@@ -130,19 +180,20 @@ export class NewOrder extends Component {
                     <div
                         className="col-12 col-sm-6"
                     >
-                        <label className="d-block my-2">
+                        <div className="d-block my-2">
                             <small>
                                 Produtos
                             </small>
-                            <button className="btn btn-block btn-primary"
+                            {/* <Products /> */}
+                            {/* <button className="btn btn-block btn-primary"
                                 onClick={ ev => alert( "em desenvolvimento" ) }
                             >
                                 <i className="fas fa-plus"></i>
                                 <span className="mx-1">
                                     Adicionar Produtos
                                 </span>
-                            </button>
-                        </label>
+                            </button> */}
+                        </div>
                     </div>
                     <div
                         className="col-12 col-sm-6"
@@ -413,10 +464,13 @@ export class SeeWithoutPrefix extends Component {
     state = {
         data: []
     }
-    componentDidMount () {
+    initialize () {
         fetch( this.props.url )
         .then( r => r.json() )
-        .then( j => this.setState( { data: j.map( x => unPrefixObject( x ) ) } ) );
+        .then( j => this.setState( { data: ( j ? j.map( x => unPrefixObject( x ) ) : [] ) } ) );
+    }
+    componentDidMount () {
+        this.initialize();
     }
     preppendHander () {
         if ( this.props.preppend ) {
@@ -449,38 +503,62 @@ export class SeeWithoutPrefix extends Component {
             }
         }
     }
+    finderHandler ( value ) {
+        console.log( value );
+        fetch( this.props.withFinder + "/" + this.props.scope + "/" + value )
+        .then( r => r.json() )
+        .then( j => {
+            if ( j ) {
+                this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
+            } else {
+                this.initialize();
+            }
+        } )
+    }
     render () {
         if ( this.state.data.length > 0 ) {
             return (
-                <ul
-                    className="list-group"
-                >
-                    { this.preppendHander() }
-                    {
-                        this.state.data.map( ( x, i ) => {
-                            return(
-                                <li
-                                    key={ i }
-                                    className="list-group-item d-flex"
-                                >
-                                    {
-                                        this.props.fields.map( ( y, k ) => {
-                                            return ( 
-                                                <td
-                                                    key={ k }
-                                                    className="m-auto py-2"
-                                                >
-                                                    { x[ y ] }
-                                                </td>
-                                            )
-                                        } ) 
-                                    }
-                                    { this.appendHandler( x ) }
-                                </li>
-                            );
-                        } )
-                    }
-                </ul>
+                <div>
+                    <label>
+                        <small>
+                            Busca por nome
+                        </small>
+                        <input
+                            type="text"
+                            className="form-control"
+                            onChange={ ev => this.finderHandler( ev.target.value ) }
+                        />
+                    </label>
+                    <ul
+                        className="list-group"
+                    >
+                        { this.preppendHander() }
+                        {
+                            this.state.data.map( ( x, i ) => {
+                                return(
+                                    <li
+                                        key={ i }
+                                        className="list-group-item d-flex"
+                                    >
+                                        {
+                                            this.props.fields.map( ( y, k ) => {
+                                                return ( 
+                                                    <td
+                                                        key={ k }
+                                                        className="m-auto py-2"
+                                                    >
+                                                        { x[ y ] }
+                                                    </td>
+                                                )
+                                            } ) 
+                                        }
+                                        { this.appendHandler( x ) }
+                                    </li>
+                                );
+                            } )
+                        }
+                    </ul>
+                </div>
             );
         } else {
             return <div>Sem registros.</div>
