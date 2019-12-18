@@ -29,6 +29,7 @@ import NewUser, {
 const SeeUsers = ( props ) => (
     <div>
         <SeeWithoutPrefix
+            filter
             url={ peopleUrl + "?person_scope=" + props.scope }
             fields={ [ "fullName", "email", "phone" ] }
             preppend={ [ "Nome", "email", "Telefone" ] }
@@ -66,8 +67,8 @@ const SeeOrders = () => (
     <div>
         <SeeWithoutPrefix
             url={ paymentsUrl }
-            fields={ [ "date", "mode", "customerId", "employeeId" ] }
-            preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a" ] }
+            fields={ [ "date", "mode", "customerId", "employeeId", "value" ] }
+            preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a", "Valor (R$)" ] }
             // append={ x => (
             //     <a className="text-info small"
             //         onClick={ ev => alert( "..." )}

@@ -17,78 +17,85 @@ import {
 
 import Http from '../http';
 
+
 export class Products extends Component {
     state = {
-      counter: 0,
-      listOne: null,
-      listTwo: null
+        options: [],
+        items: []
     };
-  
-    incrementIfTest = event => {
-      console.log(event.target.name);
-  
-      if (
-        //check if is already selected, do not want to double count
-        event.target.value === "Test" &&
-        this.state[event.target.name] !== "Test"
-      ) {
-        //increment count
-        this.setState({
-          ...this.state,
-          counter: this.state.counter + 1,
-          [event.target.name]: event.target.value
-        });
-        //decrease count if they remove Test selection, cannot be below 0.
-      } else if(this.state[event.target.name] === "Test"){
-        this.setState({
-          ...this.state,
-          counter: this.state.counter > 0 ? this.state.counter - 1 : 0,
-          [event.target.name]: event.target.value
-        });
-      }
+
+    componentDidMount () {
+        fetch( productsUrl + "?product_scope=product" )
+        .then( r => r.json() )
+        .then( j => {
+            if ( j ) {
+                const options = j.map( x => {
+                    let y = unPrefixObject( x );
+                    y.amount = 0;
+                    return y;
+                } );
+                this.setState( { options: options } );
+            }
+        } );
+    }
+    itemsHandler = v => {
+        if ( v ) {
+            const items = v.map( x => {
+                if ( ! this.state.items.some( item => item.value === x.value ) ) {
+                    x.amount = 1;
+                }
+                return x;
+            } );
+            this.setState( { items: items } );
+        }
     };
-  
+
+    changeHandler ( item, amount ) {
+        const options = this.state.options.map( i => {
+            if ( i.id === item.id ) {
+                let nItem = item;
+                nItem.amount = amount
+                return nItem;
+            }
+            return i;
+        } );
+        this.setState(
+            { options: options },
+            () => {
+                if ( this.props.onChange ) {
+                    this.props.onChange( this.state.options.filter( op => op.amount > 0 ) )
+                }
+            }
+        );
+    }
+
     render() {
-      return (
-        <div>
-          <h4>{this.state.counter}</h4>
-          <select name="listOne" onChange={this.incrementIfTest}>
-            <option />
-            <option>DownloadPrepare</option>
-            <option>Test</option>
-          </select>
-          <select name="listTwo" onChange={this.incrementIfTest}>
-            <option />
-            <option>DownloadPrepare</option>
-            <option>Test</option>
-          </select>
-        </div>
-      );
+        return (
+            <div>
+                { this.state.options.map( ( option, i ) => {
+                    return (
+                        <div key={ i } >
+                            <span>
+                                <strong>{ option.name }</strong>
+                                <span className="text-success px-2">{ option.price }</span>
+                            </span>
+                            
+                            <div className="ml-auto">
+                                <input
+                                    type="number"
+                                    min="0"
+                                    className="form-control"
+                                    value={ option.amount }
+                                    onChange={ ev => this.changeHandler( option, ev.target.value ) }
+                                />
+                            </div>
+                        </div>
+                    );
+                } ) }
+            </div>
+        );
     }
-  }
-
-/**
- * 
- */
-
-const orderServices = [
-    {
-        value: 1,
-        label: "Corte Tesoura",
-    },
-    {
-        value: 2,
-        label: "Corte na Máquina",
-    },
-    {
-        value: 3,
-        label: "Barba Modelada",
-    },
-    {
-        value: 4,
-        label: "Corte na Tesoura e Barba Modelada",
-    }
-]
+}
 
 
 export class NewOrder extends Component {
@@ -96,20 +103,72 @@ export class NewOrder extends Component {
         value: "",
         description: "",
         mode: "",
+        totalPrice: "",
+        items: [],
+        obs: ""
     }
     updateState ( pair ) {
         this.setState( pair );
     }
     submitHandler () {
-        fetch( paymentsUrl, getInit( this.state ) )
-        .then( r => r.json() )
-        .then( j => {
-            if ( j ) {
-                responseWindow( "Produto cadastro com sucesso." );
+        if (
+            this.state.customerId
+            &&
+            this.state.employeeId
+            &&
+            this.state.service
+            &&
+            this.state.mode
+            &&
+            this.state.employeeId
+        ) {
+            if ( this.state.totalPrice !== "" ) {
+                const pDescription = "Produtos:" + this.state.items.map( x => x.name + "(x" + x.amount + ")" ).join( "," );
+                let value = "";
+                if ( ! ( "" + this.state.totalPrice ).match( /,/ ) ) {
+                    value = this.state.totalPrice + ",00";
+                } else {
+                    value = this.state.totalPrice
+                }
+                const body = {
+                    customerId: this.state.customerId,
+                    employeeId: this.state.employeeId,
+                    service: this.state.service.label,
+                    mode: this.state.mode,
+                    description: pDescription + "|" + this.state.obs,
+                    value: value,
+                }
+                fetch( paymentsUrl, getInit( body ) )
+                .then( r => r.json() )
+                .then( j => {
+                    if ( j ) {
+                        responseWindow( "Pedido cadastrado com sucesso." );
+                        window.location.reload( true );
+                    } else {
+                        responseWindow( "Preencha os campos obrigatórios." );
+                    }
+                } )
             } else {
-                responseWindow( "Preencha os campos obrigatórios." );
+                alert( "Clique em \"Calular valor ->\" antes de registrar." );
             }
-        } )
+        } else {
+            alert( "Preencha os campos acima antes de registrar." );
+        }
+    }
+    totalPriceHandler () {
+        if ( ! this.state.service ) {
+            alert( "Escolha o serviço, por favor." );
+        } else {
+            let totalValue = parseFloat( this.state.service.price );
+            if ( this.state.items.length > 0 ) {
+                const productsValue = this.state.items.map( item => {
+                    return parseFloat( item.price )*parseFloat( item.amount )
+                } )
+                .reduce( ( total, currentValue ) => total + currentValue, 0 );
+                totalValue = totalValue + productsValue;
+            }
+            this.setState( { totalPrice: totalValue } );
+        }
     }
     render () {
         return (
@@ -168,32 +227,14 @@ export class NewOrder extends Component {
                             </small>
                             <Http
                                 url={ productsUrl + "?product_scope=service" }
-                                responseHandler={ j => j.map( x => unPrefixObject( x ) ).map( y => ( { value: y.name, label: y.name } ) ) }
+                                responseHandler={ j => j.map( x => unPrefixObject( x ) ).map( y => ( { value: y.name, label: y.name, price: y.price } ) ) }
                                 propName="options"
                             >
                                 <Select
-                                    onChange={ v => this.updateState( { service: v.value } ) }
+                                    onChange={ v => this.updateState( { service: v } ) }
                                 />
                             </Http>
                         </label>
-                    </div>
-                    <div
-                        className="col-12 col-sm-6"
-                    >
-                        <div className="d-block my-2">
-                            <small>
-                                Produtos
-                            </small>
-                            {/* <Products /> */}
-                            {/* <button className="btn btn-block btn-primary"
-                                onClick={ ev => alert( "em desenvolvimento" ) }
-                            >
-                                <i className="fas fa-plus"></i>
-                                <span className="mx-1">
-                                    Adicionar Produtos
-                                </span>
-                            </button> */}
-                        </div>
                     </div>
                     <div
                         className="col-12 col-sm-6"
@@ -211,18 +252,34 @@ export class NewOrder extends Component {
                     <div
                         className="col-12 col-sm-6"
                     >
-                        <label className="d-block my-2">
+                        <div className="d-block my-2">
                             <small>
-                                Valor Total:
+                                Produtos
                             </small>
-                            <input
-                                value={ this.state.sum }
-                                disabled
-                                className="form-control"
-                            />
-                        </label>
+                            <Products onChange={ items => this.updateState( { items: items } ) } />
+                        </div>
                     </div>
-                    {/*  */}
+                    
+                    <div
+                        className="col-12"
+                    >
+                        <div className="input-group mb-3 mt-4">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text text-white bg-success"
+                                onClick={ ev => this.totalPriceHandler() }>
+                                    Calular valor <i className="fas fa-arrow-right mx-2"></i>
+                                </span>
+                            </div>
+                            <input
+                                disabled
+                                value={ this.state.totalPrice }
+                                className="form-control"
+                                type="text"
+                                placeholder="Clique no botão ao lado para calcular o valor final"
+                                onChange={ ev => () => {} }
+                            />
+                        </div>
+                    </div>
                     <div
                         className="col-12"
                     >
@@ -504,65 +561,77 @@ export class SeeWithoutPrefix extends Component {
         }
     }
     finderHandler ( value ) {
-        console.log( value );
-        fetch( this.props.withFinder + "/" + this.props.scope + "/" + value )
-        .then( r => r.json() )
-        .then( j => {
-            if ( j ) {
-                this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
-            } else {
-                this.initialize();
-            }
-        } )
+        if ( value ) {
+            fetch( this.props.withFinder + "/" + this.props.scope + "/" + value )
+            .then( r => r.json() )
+            .then( j => {
+                if ( j ) {
+                    this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
+                } else {
+                    this.initialize();
+                }
+            } )
+        } else {
+            this.initialize();
+        }
+    }
+    contentHandler () {
+        if ( this.state.data.length > 0 ) {
+            return this.state.data.map( ( x, i ) => {
+                return(
+                    <li
+                        key={ i }
+                        className="list-group-item d-flex"
+                    >
+                        {
+                            this.props.fields.map( ( y, k ) => {
+                                return ( 
+                                    <td
+                                        key={ k }
+                                        className="m-auto py-2"
+                                    >
+                                        { x[ y ] }
+                                    </td>
+                                )
+                            } ) 
+                        }
+                        { this.appendHandler( x ) }
+                    </li>
+                );
+            } )
+        } else {
+            return "Sem registros."
+        }
+    }
+    filterHandler () {
+        if ( this.props.filter ) {
+            return (
+                <label>
+                    <small>
+                        Busca por nome
+                    </small>
+                    <input
+                        type="text"
+                        className="form-control"
+                        onChange={ ev => this.finderHandler( ev.target.value ) }
+                    />
+                </label>
+            )
+        }
+        return ""
     }
     render () {
-        if ( this.state.data.length > 0 ) {
-            return (
-                <div>
-                    <label>
-                        <small>
-                            Busca por nome
-                        </small>
-                        <input
-                            type="text"
-                            className="form-control"
-                            onChange={ ev => this.finderHandler( ev.target.value ) }
-                        />
-                    </label>
-                    <ul
-                        className="list-group"
-                    >
-                        { this.preppendHander() }
-                        {
-                            this.state.data.map( ( x, i ) => {
-                                return(
-                                    <li
-                                        key={ i }
-                                        className="list-group-item d-flex"
-                                    >
-                                        {
-                                            this.props.fields.map( ( y, k ) => {
-                                                return ( 
-                                                    <td
-                                                        key={ k }
-                                                        className="m-auto py-2"
-                                                    >
-                                                        { x[ y ] }
-                                                    </td>
-                                                )
-                                            } ) 
-                                        }
-                                        { this.appendHandler( x ) }
-                                    </li>
-                                );
-                            } )
-                        }
-                    </ul>
-                </div>
-            );
-        } else {
-            return <div>Sem registros.</div>
-        }
+        return (
+            <div>
+                { this.filterHandler() }
+                <ul
+                    className="list-group"
+                >
+                    { this.preppendHander() }
+                    { this.contentHandler() }
+                </ul>
+            </div>
+        );
     }
 }
 
