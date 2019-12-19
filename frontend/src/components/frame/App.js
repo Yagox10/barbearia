@@ -21,8 +21,8 @@ import Home from '../tela-inicial/App';
 import NewUser, {
     NewProduct,
     SeeWithoutPrefix,
-    NewPayment,
-    NewOrder
+    NewOrder,
+    OtherSeeWithoutPrefix
 } from '../form/App';
 
 
@@ -30,19 +30,12 @@ const SeeUsers = ( props ) => (
     <div>
         <SeeWithoutPrefix
             filter
+            filterLabel="Busca por nome"
             url={ peopleUrl + "?person_scope=" + props.scope }
             fields={ [ "fullName", "email", "phone" ] }
             preppend={ [ "Nome", "email", "Telefone" ] }
             withFinder={ findUrl }
             scope={ props.scope }
-            // append={ x => (
-            //     <a className="text-info small"
-            //         onClick={ ev => alert( "..." )}
-            //     >
-            //         <i className="fas fa-list"></i>
-            //         <span className="mx-1">Detalhes</span>
-            //     </a>
-            // ) }
         ></SeeWithoutPrefix>
     </div>
 );
@@ -65,19 +58,12 @@ const SeeProducts = ( props ) => (
 );
 const SeeOrders = () => (
     <div>
-        <SeeWithoutPrefix
+        <OtherSeeWithoutPrefix
             url={ paymentsUrl }
+            withFinder={ findUrl + "/payments" }
             fields={ [ "date", "mode", "customerId", "employeeId", "value" ] }
             preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a", "Valor (R$)" ] }
-            // append={ x => (
-            //     <a className="text-info small"
-            //         onClick={ ev => alert( "..." )}
-            //     >
-            //         <i className="fas fa-list"></i>
-            //         <span className="mx-1">Detalhes</span>
-            //     </a>
-            // ) }
-        ></SeeWithoutPrefix>
+        ></OtherSeeWithoutPrefix>
     </div>
 );
 

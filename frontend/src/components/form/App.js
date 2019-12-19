@@ -12,7 +12,8 @@ import {
 } from '../../settings';
 import {
     responseWindow,
-    unPrefixObject
+    unPrefixObject,
+    getDate
 } from "../../functions";
 
 import Http from '../http';
@@ -560,6 +561,34 @@ export class SeeWithoutPrefix extends Component {
             }
         }
     }
+    contentHandler () {
+        if ( this.state.data.length > 0 ) {
+            return this.state.data.map( ( x, i ) => {
+                return(
+                    <li
+                        key={ i }
+                        className="list-group-item d-flex"
+                    >
+                        {
+                            this.props.fields.map( ( y, k ) => {
+                                return ( 
+                                    <td
+                                        key={ k }
+                                        className="m-auto py-2"
+                                    >
+                                        { x[ y ] }
+                                    </td>
+                                )
+                            } ) 
+                        }
+                        { this.appendHandler( x ) }
+                    </li>
+                );
+            } )
+        } else {
+            return "Sem registros."
+        }
+    }
     finderHandler ( value ) {
         if ( value ) {
             fetch( this.props.withFinder + "/" + this.props.scope + "/" + value )
@@ -573,6 +602,85 @@ export class SeeWithoutPrefix extends Component {
             } )
         } else {
             this.initialize();
+        }
+    }
+    filterHandler () {
+        if ( this.props.filter ) {
+            return (
+                <label>
+                    <small>
+                        { this.props.filterLabel }
+                    </small>
+                    <input
+                        type="text"
+                        className="form-control"
+                        onChange={ ev => this.finderHandler( ev.target.value ) }
+                    />
+                </label>
+            )
+        }
+        return ""
+    }
+    render () {
+        return (
+            <div>
+                { this.filterHandler() }
+                <ul
+                    className="list-group"
+                >
+                    { this.preppendHander() }
+                    { this.contentHandler() }
+                </ul>
+            </div>
+        );
+    }
+}
+export class OtherSeeWithoutPrefix extends Component {
+    state = {
+        data: [],
+        from: "",
+        to: getDate()
+    }
+    initialize () {
+        fetch( this.props.url )
+        .then( r => r.json() )
+        .then( j => this.setState( { data: ( j ? j.map( x => unPrefixObject( x ) ) : [] ) } ) );
+    }
+    componentDidMount () {
+        this.initialize();
+    }
+    updateState ( pair ) {
+        this.setState( pair );
+    }
+    preppendHander () {
+        if ( this.props.preppend ) {
+            return (
+                <li className="list-group-item d-flex">
+                    {
+                        this.props.preppend.map( ( y, k ) => {
+                            return ( 
+                                <div
+                                    key={ k }
+                                    className="m-auto py-1"
+                                >
+                                    { y }
+                                </div>
+                            )
+                        } )
+                    }
+                </li>
+            )
+        }
+    }
+    appendHandler ( x ) {
+        if ( this.props.append ) {
+            if ( x ) {
+                return (
+                    <div className="ml-auto my-auto">
+                        { this.props.append( x ) }
+                    </div>
+                );
+            }
         }
     }
     contentHandler () {
@@ -603,22 +711,90 @@ export class SeeWithoutPrefix extends Component {
             return "Sem registros."
         }
     }
-    filterHandler () {
-        if ( this.props.filter ) {
-            return (
-                <label>
-                    <small>
-                        Busca por nome
-                    </small>
-                    <input
-                        type="text"
-                        className="form-control"
-                        onChange={ ev => this.finderHandler( ev.target.value ) }
-                    />
-                </label>
-            )
+    finderHandler () {
+        if ( this.state.to === "" ) {
+            this.setState(
+                { to: getDate() },
+                () => {
+                    const body = {
+                        from: this.state.from,
+                        to: ( this.state.to === "" ? getDate() : this.state.to )
+                    }
+                    console.log( "body",body );
+                    fetch( this.props.withFinder, getInit( body ) )
+                    .then( r => r.json() )
+                    .then( j => {
+                        if ( j ) {
+                            this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
+                        } else {
+                            this.initialize();
+                        }
+                    } )
+                }
+            );
+        } else {
+            const body = {
+                from: this.state.from,
+                to: ( this.state.to === "" ? getDate() : this.state.to )
+            }
+            console.log( "body",body );
+            fetch( this.props.withFinder, getInit( body ) )
+            .then( r => r.json() )
+            .then( j => {
+                if ( j ) {
+                    this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
+                } else {
+                    this.initialize();
+                }
+            } )
         }
-        return ""
+        const body = {
+            from: this.state.from,
+            to: ( this.state.to === "" ? getDate() : this.state.to )
+        }
+        console.log( "body",body );
+        fetch( this.props.withFinder, getInit( body ) )
+        .then( r => r.json() )
+        .then( j => {
+            if ( j ) {
+                this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
+            } else {
+                this.initialize();
+            }
+        } )
+        // criar um botão para onClick = initialize() para voltar ao inicio
+    }
+    filterHandler () {
+        // if ( this.props.filter ) {
+            console.log( this.state );
+            return (
+                <div>
+                    <label className="mx-3">
+                        <small>
+                            A partir de
+                        </small>
+                        <input
+                            type="date"
+                            className="form-control"
+                            value={ this.state.from }
+                            onChange={ ev => this.setState( { from: ev.target.value }, () => this.finderHandler() ) }
+                        />
+                    </label>
+                    <label className="mx-3">
+                        <small>
+                            Até
+                        </small>
+                        <input
+                            type="date"
+                            className="form-control"
+                            value={ this.state.to }
+                            onChange={ ev => this.setState( { to: ev.target.value }, () => this.finderHandler() ) }
+                        />
+                    </label>
+                </div>
+            )
+        // }
+        // return ""
     }
     render () {
         return (

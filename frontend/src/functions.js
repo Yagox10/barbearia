@@ -59,7 +59,7 @@ export function twoDigits ( number ) {
 }
 export function getDate () {
     const date = new Date();
-    return [ date.getFullYear(), twoDigits( date.getMonth() ), twoDigits( date.getDay() ) ].join( "-" );
+    return [ date.getFullYear(), twoDigits( date.getMonth() + 1 ), twoDigits( date.getDate() ) ].join( "-" );
 }
 export function getTime () {
     const date = new Date();
