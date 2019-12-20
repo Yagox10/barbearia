@@ -12,6 +12,8 @@ export const paymentsUrl = apiUrl + "/payments";
 export const readPaymentsUrl = "/payments";
 
 export const findUrl = basename + "/find";
+export const findTableUrl = basename + "/findtable";
+
 
 export const scopeName = scope => {
     switch ( scope ) {

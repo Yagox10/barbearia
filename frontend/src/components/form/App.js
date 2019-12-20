@@ -655,20 +655,20 @@ export class OtherSeeWithoutPrefix extends Component {
     preppendHander () {
         if ( this.props.preppend ) {
             return (
-                <li className="list-group-item d-flex">
+                <th className="list-group-item d-flex">
                     {
                         this.props.preppend.map( ( y, k ) => {
                             return ( 
-                                <div
+                                <td
                                     key={ k }
                                     className="m-auto py-1"
                                 >
                                     { y }
-                                </div>
+                                </td>
                             )
                         } )
                     }
-                </li>
+                </th>
             )
         }
     }
@@ -687,7 +687,7 @@ export class OtherSeeWithoutPrefix extends Component {
         if ( this.state.data.length > 0 ) {
             return this.state.data.map( ( x, i ) => {
                 return(
-                    <li
+                    <tr
                         key={ i }
                         className="list-group-item d-flex"
                     >
@@ -704,7 +704,7 @@ export class OtherSeeWithoutPrefix extends Component {
                             } ) 
                         }
                         { this.appendHandler( x ) }
-                    </li>
+                    </tr>
                 );
             } )
         } else {
@@ -718,9 +718,10 @@ export class OtherSeeWithoutPrefix extends Component {
                 () => {
                     const body = {
                         from: this.state.from,
-                        to: ( this.state.to === "" ? getDate() : this.state.to )
+                        to: ( this.state.to === "" ? getDate() : this.state.to ),
+                        field: "date"
                     }
-                    console.log( "body",body );
+                    console.log( "body", body );
                     fetch( this.props.withFinder, getInit( body ) )
                     .then( r => r.json() )
                     .then( j => {
@@ -735,7 +736,8 @@ export class OtherSeeWithoutPrefix extends Component {
         } else {
             const body = {
                 from: this.state.from,
-                to: ( this.state.to === "" ? getDate() : this.state.to )
+                to: ( this.state.to === "" ? getDate() : this.state.to ),
+                field: "date"
             }
             console.log( "body",body );
             fetch( this.props.withFinder, getInit( body ) )
@@ -748,21 +750,6 @@ export class OtherSeeWithoutPrefix extends Component {
                 }
             } )
         }
-        const body = {
-            from: this.state.from,
-            to: ( this.state.to === "" ? getDate() : this.state.to )
-        }
-        console.log( "body",body );
-        fetch( this.props.withFinder, getInit( body ) )
-        .then( r => r.json() )
-        .then( j => {
-            if ( j ) {
-                this.setState( { data: j.map( x => unPrefixObject( x ) ) } );
-            } else {
-                this.initialize();
-            }
-        } )
-        // criar um botão para onClick = initialize() para voltar ao inicio
     }
     filterHandler () {
         // if ( this.props.filter ) {
@@ -800,12 +787,12 @@ export class OtherSeeWithoutPrefix extends Component {
         return (
             <div>
                 { this.filterHandler() }
-                <ul
+                <table
                     className="list-group"
                 >
                     { this.preppendHander() }
                     { this.contentHandler() }
-                </ul>
+                </table>
             </div>
         );
     }

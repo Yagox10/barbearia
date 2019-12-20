@@ -50,6 +50,26 @@ $app->get( "/payments[/{id}]", function( Request $request, Response $response, a
     }
     return $response->withJson( $data );
 });
+$app->post( '/findtable/{table}', function( Request $request, Response $response, array $args ) {
+    // $body = [ "from" => "aaaa-mm-dd", "to" => "AAAA-MM-DD", "field" => "fieldNameWithoutPrefix" ]
+    $connection = $this->database;
+    $tablePrefix = $this->dbInfo[ "prefix" ];
+    $table = $args[ "table" ];
+    $prefix = whichPrefix( $table );
+    $body = $request->getParsedBody();
+    $field = $body[ "field" ];
+    $sql = "SELECT * FROM $tablePrefix$table WHERE ";
+    if ( empty( $body[ "from" ] ) ) {
+        $sql .= "$prefix$field <= '{$body[ "to" ]}'";
+    } else {
+        $sql .= "$prefix$field <= '{$body[ "to" ]}' AND $prefix$field >= '{$body[ "from" ]}'";
+    }
+    $sql .= " ORDER BY $prefix$field ASC";
+    $preparedSql = $connection->prepare( $sql );
+    $preparedSql->execute();
+    $res = $preparedSql->fetchAll();
+    return $response->withJson( $res );
+} );
 $app->get('/find/{scope}/{name}', function( Request $request, Response $response, array $args ){
     $connection = $this->database;
     $sql = "SELECT * FROM brb_people WHERE person_scope = '{$args["scope"]}' AND person_fullName LIKE '%{$args["name"]}%' ORDER BY person_fullName ASC";

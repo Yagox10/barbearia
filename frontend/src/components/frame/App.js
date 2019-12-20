@@ -9,11 +9,11 @@ import {
 } from "react-router-dom";
 
 import {
-    ordersUrl,
     productsUrl,
     paymentsUrl,
     peopleUrl,
-    findUrl
+    findUrl,
+    findTableUrl
 } from '../../settings';
 
 import Unvailable from '../unvailable/App';
@@ -60,7 +60,7 @@ const SeeOrders = () => (
     <div>
         <OtherSeeWithoutPrefix
             url={ paymentsUrl }
-            withFinder={ findUrl + "/payments" }
+            withFinder={ findTableUrl + "/payments" }
             fields={ [ "date", "mode", "customerId", "employeeId", "value" ] }
             preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a", "Valor (R$)" ] }
         ></OtherSeeWithoutPrefix>
