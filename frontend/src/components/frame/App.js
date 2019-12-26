@@ -13,7 +13,10 @@ import {
     paymentsUrl,
     peopleUrl,
     findUrl,
-    findTableUrl
+    findTableUrl,
+    scopeName,
+    getInit,
+    printOrderUrl
 } from '../../settings';
 
 import Unvailable from '../unvailable/App';
@@ -36,26 +39,66 @@ const SeeUsers = ( props ) => (
             preppend={ [ "Nome", "email", "Telefone" ] }
             withFinder={ findUrl }
             scope={ props.scope }
+            key={ props.scope === "employee" ? 1 : 2 }
         ></SeeWithoutPrefix>
     </div>
 );
+// 
+const updateProductsHandler = data => {
+    let updatedData = {};
+    updatedData[ "name" ] = window.prompt( "Nome do "  + scopeName( data.scope ) + ":", data.name );
+    updatedData[ "price" ] = window.prompt( "Preço a ser cobrado pelo "  + scopeName( data.scope ) + ":", data.price );
+    if ( data.scope === "product" ) {
+        updatedData[ "stock" ] = window.prompt( "Quantidade do " + scopeName( data.scope ) + " em estoque:", data.stock );
+    }
+    fetch( productsUrl + "/" + data.id, getInit( updatedData, "PUT" ) )
+    .then( r => r.json() )
+    .then( j => {
+        if ( j ) {
+            alert( "Dados atualizados com sucesso" );
+            window.location.reload();
+        } else {
+            alert( "Um erro inesperado ocorreu." );
+        }
+    } )
+}
 const SeeProducts = ( props ) => (
     <div>
         <SeeWithoutPrefix
             url={ productsUrl + "?product_scope=" + props.scope }
             fields={ props.fields }
             preppend={ props.preppend }
-            // append={ x => (
-            //     <a className="text-info small"
-            //         onClick={ ev => alert( "..." )}
-            //     >
-            //         <i className="fas fa-list"></i>
-            //         <span className="mx-1">Detalhes</span>
-            //     </a>
-            // ) }
+            key={ props.scope === "product" ? 1 : 2 }
+            append={ x => (
+                <button className="btn btn-info"
+                    onClick={ ev => updateProductsHandler( x ) }
+                >
+                    <i className="fas fa-pencil"></i>
+                </button>
+            ) }
         ></SeeWithoutPrefix>
     </div>
 );
+// 
+const updateOrdersHandler = data => {
+    window.open( printOrderUrl + "/" + data.id );
+    // let updatedData = {};
+    // updatedData[ "name" ] = window.prompt( "Nome do "  + scopeName( data.scope ) + ":", data.name );
+    // updatedData[ "price" ] = window.prompt( "Preço a ser cobrado pelo "  + scopeName( data.scope ) + ":", data.price );
+    // if ( data.scope === "product" ) {
+    //     updatedData[ "stock" ] = window.prompt( "Quantidade do " + scopeName( data.scope ) + " em estoque:", data.stock );
+    // }
+    // fetch( productsUrl + "/" + data.id, getInit( updatedData, "PUT" ) )
+    // .then( r => r.json() )
+    // .then( j => {
+    //     if ( j ) {
+    //         alert( "Dados atualizados com sucesso" );
+    //         window.location.reload();
+    //     } else {
+    //         alert( "Um erro inesperado ocorreu." );
+    //     }
+    // } )
+}
 const SeeOrders = () => (
     <div>
         <OtherSeeWithoutPrefix
@@ -63,6 +106,13 @@ const SeeOrders = () => (
             withFinder={ findTableUrl + "/payments" }
             fields={ [ "date", "mode", "customerId", "employeeId", "value" ] }
             preppend={ [ "Data", "Modo de Pagamento", "Cliente", "Funcionário/a", "Valor (R$)" ] }
+            append={ x => (
+                <button className="btn btn-info"
+                    onClick={ ev => updateOrdersHandler( x ) }
+                >
+                    <i className="fas fa-printer"></i>
+                </button>
+            ) }
         ></OtherSeeWithoutPrefix>
     </div>
 );
