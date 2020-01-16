@@ -4,7 +4,7 @@ $addContentLengthHeader = true;
 if ( IN_DEVELOPMENT ) {
     $database = [
         "host" => "localhost",
-        "name" => "deahjohn",
+        "name" => "dearjohn",
         "charset" => "utf8",
         "user" => "enriquerene",
         "password" => "um2tres45",
@@ -13,11 +13,11 @@ if ( IN_DEVELOPMENT ) {
 } else {
     $database = [
         "host" => "localhost",
-        "name" => "dearjohn",
+        "name" => "gessomarica",
         "charset" => "utf8",
-        "user" => "dearjohn",
+        "user" => "gessomarica",
         "password" => "8888",
-        "prefix" => "brb_",
+        "prefix" => "gm_",
     ];
 }
 

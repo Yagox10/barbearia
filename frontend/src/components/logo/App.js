@@ -14,10 +14,10 @@ export default function ( props ) {
             /> */}
             <div>
                 <span className="mx-1">
-                    <i className="fas fa-cut"></i>
+                    <i className="fas fa-home"></i>
                 </span>
                 <span>
-                    DEAR JOHN
+                    GESSO MARICÁ
                 </span>
             </div>
         </figure>
