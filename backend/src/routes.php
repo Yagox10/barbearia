@@ -25,13 +25,13 @@ $app->get( "/print/{id}", function ( Request $request, Response $response, array
     $html .= '    <meta charset="UTF-8">';
     $html .= '    <meta name="viewport" content="width=device-width, initial-scale=1.0">';
     $html .= '    <meta http-equiv="X-UA-Compatible" content="ie=edge">';
-    $html .= '    <title>Dear John | NFe</title>';
+    $html .= '    <title>Gesso Maricá | NFe</title>';
     $html .= '</head>';
     $html .= '<body>';
     $html .= '    <div>';
     $html .= '        <div style="padding-top: 16px;display:flex;">';
     $html .= '            <div>';
-    $html .= '                DEAR JOHN';
+    $html .= '                GESSO MARICÁ';
     $html .= '            </div>';
     $html .= '            <div style="margin-left:auto;">';
     $html .= '                CNPJ 00.00.0000/0001-00';

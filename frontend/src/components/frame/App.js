@@ -73,7 +73,7 @@ const SeeProducts = ( props ) => (
                 <button className="btn btn-info"
                     onClick={ ev => updateProductsHandler( x ) }
                 >
-                    <i className="fas fa-pencil"></i>
+                    <i className="fas fa-pen"></i>
                 </button>
             ) }
         ></SeeWithoutPrefix>
@@ -110,7 +110,7 @@ const SeeOrders = () => (
                 <button className="btn btn-info"
                     onClick={ ev => updateOrdersHandler( x ) }
                 >
-                    <i className="fas fa-printer"></i>
+                    <i className="fas fa-print"></i>
                 </button>
             ) }
         ></OtherSeeWithoutPrefix>

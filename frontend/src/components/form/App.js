@@ -286,13 +286,13 @@ export class NewOrder extends Component {
                     >
                         <label className="d-block my-2">
                             <small>
-                                Observação <small className="text-muted">(opcional)</small>
+                                Endereço de Entrega e Observações <small className="text-muted">(opcional)</small>
                             </small>
                             <textarea
                                 className="form-control"
                                 value={ this.state.obs }
                                 onChange={ ev => this.updateState( { obs: ev.target.value } ) }
-                                placeholder="Descreva alguma situação fora do comum que o sistema não possa identificar de forma automática pelas operações padrão."
+                                placeholder="Digite aqui o ENDEREÇO DE ENTREGA e observações."
                             ></textarea>
                         </label>
                     </div>
