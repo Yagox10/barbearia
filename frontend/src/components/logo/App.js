@@ -14,10 +14,10 @@ export default function ( props ) {
             /> */}
             <div>
                 <span className="mx-1">
-                    <i className="fas fa-cut"></i>
+                    <i className="fas fa-smile-wink"></i>
                 </span>
                 <span>
-                    DEAR JOHN
+                    SUA EMPRESA
                 </span>
             </div>
         </figure>

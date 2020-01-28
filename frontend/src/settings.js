@@ -1,8 +1,8 @@
 /**
  * ORÇA AGORA BACKEND ROUTES
  */
-export const indev = false;
-export const basename = ( indev ? "http://localhost:8000" : "http://localhost/dearjohn/backend" );
+export const indev = true;
+export const basename = ( indev ? "http://localhost:8000" : "http://host" );
 
 export const apiUrl = basename + "/api";
 export const peopleUrl = apiUrl + "/people";

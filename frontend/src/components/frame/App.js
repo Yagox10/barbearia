@@ -73,7 +73,7 @@ const SeeProducts = ( props ) => (
                 <button className="btn btn-info"
                     onClick={ ev => updateProductsHandler( x ) }
                 >
-                    <i className="fas fa-pencil"></i>
+                    <i className="fas fa-pen"></i>
                 </button>
             ) }
         ></SeeWithoutPrefix>
@@ -151,7 +151,7 @@ export default class App extends Component {
                             render={ () => <SeeProducts
                                 scope="product"
                                 fields={ [ "name", "price", "stock" ] }
-                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span>Estoque</span> ] }
+                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span>Estoque</span>, <span></span> ] }
                             /> }
                         />
                         <Route
@@ -163,7 +163,7 @@ export default class App extends Component {
                             render={ () => <SeeProducts
                                 scope="service"
                                 fields={ [ "name", "price" ] }
-                                preppend={ [ <span>Nome</span>, <span>Preço</span> ] }
+                                preppend={ [ <span>Nome</span>, <span>Preço</span>, <span></span> ] }
                             /> }
                         />
                         {/*  */}

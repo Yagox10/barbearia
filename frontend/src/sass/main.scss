@@ -16,9 +16,17 @@ $border-radius: .1rem;
 
 // lazy...
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+
+aside {
+    nav {
+        font-family: 'Rubik', sans-serif;
+    }
+}
 
 .text-inherit {
     color: inherit !important;
+    font-size: 1.5em;
 }
 // reuse SASS Bootstrap variables:
 // $bp-xs: map-get($breakpoints, xs );
